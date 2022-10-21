@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!--Copyright (C) [2022] [Matt Cottam], [mpcottam@raincloud.co.uk]-->
+
+<!--        This program is free software; you can redistribute it and/or modify-->
+<!--        it under the terms of the GNU General Public License as published by-->
+<!--        the Free Software Foundation; either version 2 of the License, or-->
+<!--        (at your option) any later version.-->
+
+<!--        This program is distributed in the hope that it will be useful,-->
+<!--        but WITHOUT ANY WARRANTY; without even the implied warranty of-->
+<!--        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the-->
+<!--        GNU General Public License for more details.-->
+
+<!--        You should have received a copy of the GNU General Public License-->
+<!--        along with this program; if not, write to the Free Software-->
+<!--        Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.-->
+
+
+<!--        #############################################################################-->
+<!--        #  Selection Plus - a dbus based inkscape selection passback extension   -->
+<!--        #  An Inkscape 1.2.1+ extension -->
+<!--        #############################################################################-->
+
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+    <name>Selection Plus</name>
+    <id>inklinea.selection_plus</id>
+
+
+    <param name="selection_plus_notebook" type="notebook">
+
+    <page name="settings_page" gui-text="Settings">
+    <hbox>
+    <param name="selection_type_radio" type="optiongroup" appearance="radio" gui-description="" gui-text="Selection Type">
+        <option value="path">Path</option>
+        <option value="circle">Circle</option>
+        <option value="ellipse">Ellipse</option>
+        <option value="rect">Rectangle</option>
+        <option value="use">Clone</option>
+        <option value="g">Group</option>
+    </param>
+    </hbox>
+    <hbox>
+    <param name="dbus_delay_float" type="float" min="0.1" max="5" gui-text="Selection Delay (seconds)" gui-description="Delay Selection (this is a workaround for slower machines)">0.5</param>
+    </hbox>
+    <param name="clear_selection_cb" type="boolean" gui-text="Clear Selection" gui-description="Clear current selection, before reselect">true</param>
+    </page>
+
+        <page name="about_page" gui-text="About">
+
+            <label>
+                Selection Plus
+                A dbus based inkscape selection passback extension
+            </label>
+            <label>
+                Inkscape 1.1 +
+            </label>
+            <label appearance="url">
+
+                https://inkscape.org/~inklinea/resources/=extension/
+
+            </label>
+
+            <label appearance="url">
+
+                https://gitlab.com/inklinea
+
+            </label>
+
+            <label xml:space="preserve">
+▶ dbus base selection passback
+▶ Appears in 'Extensions>Arrange'
+▶ Inkscape 1.2+ (may need 1.2.1)
+▶ A shortcut can be used to
+  inklinea.selection_plus.noprefs
+		</label>
+        </page>
+
+
+<!--    end of notebook -->
+    </param>
+
+
+    <effect>
+        <object-type>path</object-type>
+        <effects-menu>
+            <submenu name="Arrange"/>
+        </effects-menu>
+    </effect>
+    <script>
+        <command location="inx" interpreter="python">selection_plus.py</command>
+    </script>
+</inkscape-extension>
