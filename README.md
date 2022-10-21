@@ -2,7 +2,7 @@
 
 # A dbus based inkscape selection passback extension
 
-▶ dbus base selection passback
+▶ Inkscape 1.2+ (may need 1.2.1)
 
 ▶ Appears in 'Extensions>Arrange'
 
