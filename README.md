@@ -1,6 +1,6 @@
 # Selection Plus
 
-#A dbus based inkscape selection passback extension
+# A dbus based inkscape selection passback extension
 
 ▶ dbus base selection passback
 
