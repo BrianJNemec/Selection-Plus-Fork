@@ -115,8 +115,13 @@ class SelectionPassback(inkex.EffectExtension):
         path_id_list_string = f"\'{','.join(path_id_list)}\'"
 
         if os_check(self) == 'windows':
+
+            py_exe = sys.executable
+            if 'pythonw.exe' in py_exe:
+                py_exe = py_exe.replace('pythonw.exe', 'python.exe')
+
             DETACHED_PROCESS = 0x08000000
-            subprocess.Popen(['c:/program files/inkscape/bin/python.exe', 'ink_dbus.py',  'application', 'None', 'None', path_id_list_string, dbus_delay, clear_selection], creationflags=DETACHED_PROCESS)
+            subprocess.Popen([py_exe, 'ink_dbus.py',  'application', 'None', 'None', path_id_list_string, dbus_delay, clear_selection], creationflags=DETACHED_PROCESS)
         else:
             subprocess.Popen(['python3', 'ink_dbus.py', 'application', 'None', 'None', path_id_list_string, dbus_delay, clear_selection],
                          preexec_fn=os.setpgrp, stdout=open('/dev/null', 'w'),
