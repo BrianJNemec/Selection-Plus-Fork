@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!--Copyright (C) [2022] [Matt Cottam], [mpcottam@raincloud.co.uk]-->
+
+<!--        This program is free software; you can redistribute it and/or modify-->
+<!--        it under the terms of the GNU General Public License as published by-->
+<!--        the Free Software Foundation; either version 2 of the License, or-->
+<!--        (at your option) any later version.-->
+
+<!--        This program is distributed in the hope that it will be useful,-->
+<!--        but WITHOUT ANY WARRANTY; without even the implied warranty of-->
+<!--        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the-->
+<!--        GNU General Public License for more details.-->
+
+<!--        You should have received a copy of the GNU General Public License-->
+<!--        along with this program; if not, write to the Free Software-->
+<!--        Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.-->
+
+
+<!--        #############################################################################-->
+<!--        #  Selection Plus - a dbus based inkscape selection passback extension   -->
+<!--        #  An Inkscape 1.2.1+ extension -->
+<!--        #############################################################################-->
+
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+    <name>Selection Plus</name>
+    <id>inklinea.selection_plus</id>
+
+
+    <param name="selection_plus_notebook" type="notebook">
+
+    <page name="settings_page" gui-text="Basic">
+    <hbox>
+    <param name="selection_type_radio" type="optiongroup" appearance="radio" gui-description="" gui-text="Selection Type">
+        <option value="path">Path</option>
+        <option value="circle">Circle</option>
+        <option value="ellipse">Ellipse</option>
+        <option value="rect">Rectangle</option>
+        <option value="use">Clone</option>
+        <option value="g">Group</option>
+    </param>
+    </hbox>
+    <hbox>
+    <param name="dbus_delay_float" type="float" min="0.1" max="5" gui-text="Selection Delay (seconds)" gui-description="Delay Selection (this is a workaround for slower machines)">0.5</param>
+    </hbox>
+    <param name="clear_selection_cb" type="boolean" gui-text="Clear Selection" gui-description="Clear current selection, before reselect">true</param>
+    </page>
+
+    # Paths Page
+    <page name="settings_page" gui-text="Path">
+
+        <label xml:space="preserve"> This page not active yet
+    </label>
+
+    <hbox>
+    <param name="path_type_combo" type="optiongroup" appearance="combo" gui-text="Path Type">
+        <option value="any">Any</option>
+        <option value="absolute">Absolute</option>
+        <option value="relative">Relative</option>
+        <option value="mixed">Mixed</option>
+    </param>
+    </hbox>
+
+    </page>
+    # End of Paths Page
+
+    # xpath Page
+    <page name="xpath_page" gui-text="xpath">
+
+        <hbox>
+
+        <param name="xpath_string_radio" type="optiongroup" appearance="radio" gui-text="">
+
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+
+        </param>
+
+            <vbox>
+
+        <param name="xpath_user_string1" type="string" gui-text="">//svg:circle</param>
+        <param name="xpath_user_string2" type="string" gui-text="">//svg:rect</param>
+        <param name="xpath_user_string3" type="string" gui-text="">//svg:ellipse</param>
+        <param name="xpath_user_string4" type="string" gui-text="">//svg:path</param>
+        <param name="xpath_user_string5" type="string" gui-text="">//svg:text</param>
+        <param name="xpath_user_string6" type="string" gui-text="">//svg:line</param>
+
+            </vbox>
+
+        </hbox>
+
+    </page>
+    # End of xpath Page
+
+    # Bounding Box Page
+    <page name="bounding_box_page" gui-text="Bbox">
+        <label appearance="header">Bounding Box Thresholds</label>
+
+        <hbox>
+            <param name="bbox_unit_choice_bool" type="bool" gui-text="">false</param>
+
+        <param name="bbox_unit_choice_combo" type="optiongroup" appearance="combo"
+               gui-text="Units">
+            <option value="px">px</option>
+            <option value="pt">pt</option>
+            <option value="mm">mm</option>
+            <option value="cm">cm</option>
+            <option value="in">in</option>
+        </param>
+            <label>  (leave unchecked for default)</label>
+        </hbox>
+
+        <hbox>
+
+        <vbox>
+            <hbox>
+                <param name="bbox_width_bool" type="bool" gui-text="">false</param>
+                <param name="bbox_width_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Width Lower">1.234</param>
+                <param name="bbox_width_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Width Upper">1.234</param>
+            </hbox>
+            <hbox>
+                <param name="bbox_height_bool" type="bool" gui-text="">false</param>
+                <param name="bbox_height_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Height Lower">1.234</param>
+                <param name="bbox_height_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Height Upper">1.234</param>
+            </hbox>
+            <hbox>
+                <param name="bbox_diagonal_bool" type="bool" gui-text="">false</param>
+                <param name="bbox_diagonal_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Diagonal Lower">1.234</param>
+                <param name="bbox_diagonal_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Diagonal Upper">1.234</param>
+            </hbox>
+            <hbox>
+                <param name="bbox_area_bool" type="bool" gui-text="">false</param>
+                <param name="bbox_area_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Area Lower">1.234</param>
+                <param name="bbox_area_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Area Upper">1.234</param>
+            </hbox>
+            <hbox>
+                <param name="bbox_ratio_width_height_bool" type="bool" gui-text="">false</param>
+                <param name="bbox_ratio_width_height_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Width/Height Ratio Lower">1.234</param>
+                <param name="bbox_ratio_width_height_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Width/Height Ratio Upper">1.234</param>
+            </hbox>
+            <hbox>
+                <param name="bbox_ratio_height_width_bool" type="bool" gui-text="">false</param>
+                <param name="bbox_ratio_height_width_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Height/Width Ratio Lower">1.234</param>
+                <param name="bbox_ratio_height_width_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Height/Width Ratio Upper">1.234</param>
+            </hbox>
+        </vbox>
+
+    </hbox>
+
+    </page>
+    # End of bounding box page
+
+
+
+        <page name="about_page" gui-text="About">
+
+            <label>
+                Selection Plus
+                A dbus based inkscape selection passback extension
+            </label>
+            <label>
+                Inkscape 1.1 +
+            </label>
+            <label appearance="url">
+
+                https://inkscape.org/~inklinea/resources/=extension/
+
+            </label>
+
+            <label appearance="url">
+
+                https://gitlab.com/inklinea
+
+            </label>
+
+            <label xml:space="preserve">
+▶ dbus base selection passback
+▶ Appears in 'Extensions>Arrange'
+▶ Inkscape 1.2+ (may need 1.2.1)
+▶ A shortcut can be used to
+  inklinea.selection_plus.noprefs
+		</label>
+        </page>
+
+
+<!--    end of notebook -->
+    </param>
+
+
+    <effect>
+        <object-type>path</object-type>
+        <effects-menu>
+            <submenu name="Arrange"/>
+        </effects-menu>
+    </effect>
+    <script>
+        <command location="inx" interpreter="python">selection_plus.py</command>
+    </script>
+</inkscape-extension>
