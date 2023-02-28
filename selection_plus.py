@@ -238,7 +238,7 @@ class SelectionPassback(inkex.EffectExtension):
 
         sys.exit()
 
-        # Comment just to trigger merge
+        # Comment just to trigger merg
 
 if __name__ == '__main__':
     SelectionPassback().run()
