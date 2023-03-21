@@ -27,6 +27,19 @@
     <name>Selection Plus</name>
     <id>inklinea.selection_plus</id>
 
+<!--    # Headline settings-->
+
+    <hbox>
+
+        <param name="selection_mode_combo" type="optiongroup" appearance="combo" gui-text="Selection Mode">
+            <option value="clear">Clear All</option>
+            <option value="add">Add</option>
+            <option value="subtract">Subtract</option>
+        </param>
+
+        <param name="dbus_delay_float" type="float" min="0.1" max="5" gui-text="Selection Delay (seconds)" gui-description="Delay Selection (this is a workaround for slower machines)">0.5</param>
+    </hbox>
+
 
     <param name="selection_plus_notebook" type="notebook">
 
@@ -41,37 +54,101 @@
         <option value="g">Group</option>
     </param>
     </hbox>
-    <hbox>
-    <param name="dbus_delay_float" type="float" min="0.1" max="5" gui-text="Selection Delay (seconds)" gui-description="Delay Selection (this is a workaround for slower machines)">0.5</param>
-    </hbox>
-    <param name="clear_selection_cb" type="boolean" gui-text="Clear Selection" gui-description="Clear current selection, before reselect">true</param>
+
     </page>
 
-    # Paths Page
+<!--    # Paths Page-->
     <page name="path_page" gui-text="Path">
 
-        <label xml:space="preserve"> This page not active yet
-    </label>
+<!--    <param name="combined_paths_bool" type="bool" gui-text="Combined Paths Only">false</param>-->
+
+        <param name="combined_paths_combo" type="optiongroup" appearance="combo" gui-text="Combined Paths">
+            <option value="ignore">Ignore</option>
+            <option value="combined_only">Combined Only</option>
+            <option value="uncombined_only">Uncombined Only</option>
+        </param>
 
     <hbox>
-    <param name="path_type_combo" type="optiongroup" appearance="combo" gui-text="Path Type">
-        <option value="any">Any</option>
-        <option value="absolute">Absolute</option>
-        <option value="relative">Relative</option>
-        <option value="mixed">Mixed</option>
+
+    <hbox>
+
+    <param name="closed_path_combo" type="optiongroup" appearance="combo" gui-text="Closed/Open Paths">
+        <option value="ignore">Ignore</option>
+        <option value="closed_only">Closed Only</option>
+        <option value="open_only">Open Only</option>
     </param>
     </hbox>
 
         <hbox>
-            <param name="node_count_bool" type="bool" gui-text="">false</param>
-            <param name="node_count_lower" type="int" min="1" max="99999" gui-text="Node Count Lower">0</param>
-            <param name="node_count_upper" type="int" min="1" max="99999" gui-text="Node Count Upper">2</param>
+            <param name="path_type_combo" type="optiongroup" appearance="combo" gui-text="Path Type">
+                <option value="any">Any</option>
+                <option value="absolute">Absolute</option>
+                <option value="relative">Relative</option>
+                <option value="mixed">Mixed</option>
+            </param>
         </hbox>
 
-    </page>
-    # End of Paths Page
+    </hbox>
 
-    # xpath Page
+        <hbox>
+        <param name="path_thres_bool" type="bool" gui-text="">false</param>
+        <label appearance="header">Path Thresholds</label>
+        </hbox>
+
+        <hbox>
+            <param name="path_thres_unit_choice_bool" type="bool" gui-text="">false</param>
+        <param name="path_thres_unit_choice_combo" type="optiongroup" appearance="combo"
+               gui-text="Units">
+            <option value="px">px</option>
+            <option value="pt">pt</option>
+            <option value="mm">mm</option>
+            <option value="cm">cm</option>
+            <option value="in">in</option>
+        </param>
+            <label>  (leave unchecked for default)</label>
+        </hbox>
+
+
+        <hbox>
+
+            <param name="path_thres_radio" type="optiongroup" appearance="radio"
+                   gui-text="">
+                <option value="node_count">Node Count</option>
+                <option value="path_length">Path Length</option>
+                <option value="path_area">Path Area</option>
+            </param>
+
+        <vbox>
+
+        <hbox>
+            <param name="node_count_lower" type="int" min="1" max="99999" gui-text="Lower">0</param>
+            <param name="node_count_upper" type="int" min="1" max="99999" gui-text="Upper">2</param>
+        </hbox>
+        <separator/>
+        <hbox>
+            <param name="path_length_lower" type="float" min="0.001" max="99999" precision="4" gui-text="Lower">1</param>
+            <param name="path_length_upper" type="float" min="0.001" max="99999" precision="4" gui-text="Upper">2</param>
+        </hbox>
+        <separator/>
+            <hbox>
+                <param name="path_area_lower" type="float" min="0.001" max="99999" precision="4"  gui-text="Lower">1</param>
+                <param name="path_area_upper" type="float" min="0.001" max="99999" precision="4"  gui-text="Upper">2</param>
+            </hbox>
+
+        </vbox>
+
+        </hbox>
+
+        <param name="path_thres_sorting_combo" type="optiongroup" appearance="combo" gui-text="Sort Threshold List">
+            <option value="ignore">Ignore</option>
+            <option value="ascending">Ascending</option>
+            <option value="descending">Descending</option>
+        </param>
+
+    </page>
+<!--    # End of Paths Page-->
+
+<!--    # xpath Page-->
     <page name="xpath_page" gui-text="xpath">
 
         <hbox>
@@ -100,10 +177,12 @@
 
         </hbox>
 
-    </page>
-    # End of xpath Page
+        <label appearance="url">https://en.wikipedia.org/wiki/XPath</label>
 
-    # Bounding Box Page
+    </page>
+<!--    # End of xpath Page-->
+
+<!--    # Bounding Box Page-->
     <page name="bounding_box_page" gui-text="Bbox">
         <label appearance="header">Bounding Box Thresholds</label>
 
@@ -125,43 +204,164 @@
 
         <vbox>
             <hbox>
-                <param name="bbox_width_bool" type="bool" gui-text="">false</param>
-                <param name="bbox_width_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Width Lower">1.234</param>
-                <param name="bbox_width_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Width Upper">1.234</param>
-            </hbox>
+                <param name="bbox_thres_type_combo" type="optiongroup" appearance="radio"
+                       gui-text="">
+                    <option value="bbox_width">Width</option>
+                    <option value="bbox_height">Height</option>
+                    <option value="bbox_diagonal">Diagonal</option>
+                    <option value="bbox_area">Area</option>
+                    <option value="bbox_ratio_width_height">Ratio Width Height</option>
+                    <option value="bbox_ratio_height_width">Ratio Height Width</option>
+                </param>
+
+            <vbox>
+
             <hbox>
-                <param name="bbox_height_bool" type="bool" gui-text="">false</param>
-                <param name="bbox_height_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Height Lower">1.234</param>
-                <param name="bbox_height_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Height Upper">1.234</param>
+                <param name="bbox_width_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Lower">1.234</param>
+                <param name="bbox_width_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Upper">1.234</param>
             </hbox>
+            <separator/>
             <hbox>
-                <param name="bbox_diagonal_bool" type="bool" gui-text="">false</param>
-                <param name="bbox_diagonal_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Diagonal Lower">1.234</param>
-                <param name="bbox_diagonal_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Diagonal Upper">1.234</param>
+                <param name="bbox_height_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Lower">1.234</param>
+                <param name="bbox_height_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Upper">1.234</param>
             </hbox>
+            <separator/>
             <hbox>
-                <param name="bbox_area_bool" type="bool" gui-text="">false</param>
-                <param name="bbox_area_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Area Lower">1.234</param>
-                <param name="bbox_area_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Area Upper">1.234</param>
+                <param name="bbox_diagonal_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Lower">1.234</param>
+                <param name="bbox_diagonal_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Upper">1.234</param>
             </hbox>
+            <separator/>
             <hbox>
-                <param name="bbox_ratio_width_height_bool" type="bool" gui-text="">false</param>
-                <param name="bbox_ratio_width_height_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Width/Height Ratio Lower">1.234</param>
-                <param name="bbox_ratio_width_height_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Width/Height Ratio Upper">1.234</param>
+                <param name="bbox_area_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Lower">1.234</param>
+                <param name="bbox_area_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Upper">1.234</param>
             </hbox>
+            <separator/>
             <hbox>
-                <param name="bbox_ratio_height_width_bool" type="bool" gui-text="">false</param>
-                <param name="bbox_ratio_height_width_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Height/Width Ratio Lower">1.234</param>
-                <param name="bbox_ratio_height_width_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Height/Width Ratio Upper">1.234</param>
+                <param name="bbox_ratio_width_height_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Lower">1.234</param>
+                <param name="bbox_ratio_width_height_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Upper">1.234</param>
+            </hbox>
+            <separator/>
+            <hbox>
+                <param name="bbox_ratio_height_width_lower" type="float" precision="4" min="0.001" max="99999" gui-text="Lower">1.234</param>
+                <param name="bbox_ratio_height_width_upper" type="float" precision="4" min="0.001" max="99999" gui-text="Upper">1.234</param>
+            </hbox>
+
+                </vbox>
             </hbox>
         </vbox>
 
     </hbox>
 
+        <param name="bbox_thres_sorting_combo" type="optiongroup" appearance="combo" gui-text="Sort Threshold List">
+            <option value="ignore">Ignore</option>
+            <option value="ascending">Ascending</option>
+            <option value="descending">Descending</option>
+        </param>
+
     </page>
-    # End of bounding box page
+<!--     End of bounding box page-->
+
+<!--        Colour page-->
+        <page name="color_page" gui-text="Colour">
 
 
+<!--            <hbox>-->
+<!--                <param name="draw_swatches_bool" type="bool" gui-text="">false</param>-->
+<!--                <param name="swatch_size_float" type="float" min="0.1" max="9999" gui-text="Swatch Size">20</param>-->
+<!--                <param name="swatch_row_length_int" type="int" min="1" max="9999" gui-text="Row Size">15</param>-->
+<!--            </hbox>-->
+
+            <separator/>
+            <separator/>
+
+            <!--    Radio buttons-->
+
+            <!--    Threshold radio buttons -->
+
+            <hbox>
+
+                <param name="color_thres_radio" type="optiongroup" appearance="radio"
+                       gui-text="">
+                    <option value="color_limit">Limit</option>
+                    <option value="color_range">Range</option>
+                    <option value="color_distance">Distance</option>
+                </param>
+
+                <vbox>
+
+                    <hbox>
+                        <param name="red_single_value_bool" type="bool" gui-text="">false</param>
+                        <param name="red_single_value_int" type="int" min="0" max="255" gui-text="Red">20</param>
+                        <param name="red_single_value_more_than_bool" type="bool" gui-text=">">false</param>
+                    </hbox>
+
+                    <hbox>
+                        <param name="green_single_value_bool" type="bool" gui-text="">false</param>
+                        <param name="green_single_value_int" type="int" min="0" max="255" gui-text="Green">50</param>
+                        <param name="green_single_value_more_than_bool" type="bool" gui-text=">">false</param>
+                    </hbox>
+
+                    <hbox>
+                        <param name="blue_single_value_bool" type="bool" gui-text="">false</param>
+                        <param name="blue_single_value_int" type="int" min="0" max="255" gui-text="Blue">70</param>
+                        <param name="blue_single_value_more_than_bool" type="bool" gui-text=">">false</param>
+                    </hbox>
+
+                    <separator/>
+                    <separator/>
+
+                    <hbox>
+
+                        <vbox>
+                            <hbox>
+                                <param name="red_color_range_bool" type="bool" gui-text="Red">false</param>
+                                <param name="red_color_range_lower_int" type="int" min="0" max="255" gui-text="Lower">0</param>
+                                <param name="red_color_range_upper_int" type="int" min="0" max="255" gui-text="Upper">255</param>
+                            </hbox>
+                            <hbox>
+                                <param name="green_color_range_bool" type="bool" gui-text="Green">false</param>
+                                <param name="green_color_range_lower_int" type="int" min="0" max="255" gui-text="Lower">0</param>
+                                <param name="green_color_range_upper_int" type="int" min="0" max="255" gui-text="Upper">255</param>
+                            </hbox>
+                            <hbox>
+                                <param name="blue_color_range_bool" type="bool" gui-text="Blue">false</param>
+                                <param name="blue_color_range_lower_int" type="int" min="0" max="255" gui-text="Lower">0</param>
+                                <param name="blue_color_range_upper_int" type="int" min="0" max="255" gui-text="Upper">255</param>
+                            </hbox>
+                        </vbox>
+
+                    </hbox>
+
+                    <separator/>
+                    <separator/>
+
+                    <hbox>
+
+
+                        <param name="eu_base_color_inkex_color" type="color" appearance="colorbutton" gui-text="">0x0000ffff</param>
+
+                        <param name="euclidean_weighting_radio" type="optiongroup" appearance="radio" gui-description="" gui-text="">
+                            <option value="1_1_1">1*R 1*G 1*B</option>
+                            <option value="3_4_2">3*R 4*G 2*B</option>
+                            <option value="2_4_3">2*R 4*G 3*B</option>
+                            <option value="custom">Custom</option>
+                        </param>
+                        <vbox>
+                            <param name="r_weight_int" type="int" min="1" max="999" gui-text="Red">1</param>
+                            <param name="g_weight_int" type="int" min="1" max="999" gui-text="Green">1</param>
+                            <param name="b_weight_int" type="int" min="1" max="999" gui-text="Blue">1</param>
+                        </vbox>
+                    </hbox>
+
+                </vbox>
+
+            </hbox>
+            <param name="eu_threshold_float" type="float" appearance="full" min="0" max="442" gui-text="Distance">125</param>
+
+
+
+        </page>
+<!--        End of Colour page-->
 
         <page name="about_page" gui-text="About">
 

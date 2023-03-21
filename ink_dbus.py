@@ -3,25 +3,39 @@ import sys
 from time import sleep
 
 import gi
+import inkex
+
 gi.require_version("Gio", "2.0")
 from gi.repository import Gio, GLib
 
-path_id_list = sys.argv[4]
-path_id_list = path_id_list_string = path_id_list[1:-1]
-path_id_list = path_id_list.split(',')
-path_id_list_string = ','.join(path_id_list)
-path_id_list_string = f'{path_id_list_string}'
+# Needed to write debug info - as not possible to see subprocess
+# stdout / stderr in Inkscape
+def write_debug_file(data):
+    with open("/home/name/test.txt", mode='a', encoding='utf-8') as file:
+        file.write(str(data))
+        file.close()
 
+def selection_arg_to_list(selection_arg):
+
+    arg_string = selection_arg[1:-1]
+    id_list = arg_string.split(',')
+    id_list_string = ','.join(id_list)
+    id_list_string = f'{id_list_string}'
+    return id_list, id_list_string
+
+# Get the selection criteria
+path_id_args = sys.argv[4]
+path_id_list, dummy_string = selection_arg_to_list(path_id_args)
+
+# Delay (mainly for windows systems)
 dbus_delay_float = float(sys.argv[5])
-clear_selection = sys.argv[6]
 
-# with open("/home/name/test.txt", mode='w', encoding='utf-8') as file:
-#     string = 'hello'
-#     file.write(path_id_list_string)
-#     # file.write(string)
-#     file.close()
-#
-# sys.exit()
+# Should we Clear current selection, add to it, or subtract from it ?
+selection_mode = sys.argv[6]
+
+# The currently selected objects in the document
+current_selection_id_list_string = sys.argv[7]
+current_selection_id_list, dummy_string = selection_arg_to_list(current_selection_id_list_string)
 
 class InkDbus:
 
@@ -88,9 +102,19 @@ InkDbus.start_bus(None)
 
 sleep(dbus_delay_float)
 
-if clear_selection == 'true':
+if selection_mode == 'clear':
 
     InkDbus.ink_dbus_action(None, 'application', 'select-clear', None, None)
+
+elif selection_mode == 'add':
+
+    path_id_list = list(set(path_id_list + current_selection_id_list))
+
+elif selection_mode == 'subtract':
+
+    path_id_list = [x for x in current_selection_id_list if x not in path_id_list]
+
+path_id_list_string = f"{','.join(path_id_list)}"
 
 InkDbus.ink_dbus_action(None, 'application', 'select-by-id', path_id_list_string, None)
 
