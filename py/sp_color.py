@@ -10,7 +10,9 @@ class SpColor:
 
     def sp_colour_main(self, press_att):
 
-        drawable_children = self.svg.xpath('//svg:path | //svg:circle | //svg:ellipse | //svg:line | //svg:polygon | //svg:polyline | //svg:rect')
+        drawable_children = self.svg.xpath(
+            '//svg:circle | //svg:ellipse | //svg:line | //svg:path | //svg:text | //svg:polygon | //svg:polyline '
+            '| //svg:rect | //svg:use')
 
         element_style_dict = SpColor.make_style_dict(self, drawable_children)
 

@@ -85,8 +85,8 @@ def set_stderr(self, state):
         sys.stderr = sys.__stderr__
 
 
-# set_stdout(None, 'off')
-# set_stderr(None, 'off')
+set_stdout(None, 'off')
+set_stderr(None, 'off')
 
 # import warnings
 # warnings.filterwarnings("ignore")
@@ -278,7 +278,7 @@ class SelectionPassback(inkex.EffectExtension):
         # Bounding Box Page
 
         elif self.options.selection_plus_notebook == 'bounding_box_page':
-            selection_string = '//svg:circle | //svg:ellipse | //svg:line | //svg:text | //svg:tspan | //svg:path | //svg:polygon | //svg:polyline | //svg:rect'
+            selection_string = '//svg:circle | //svg:ellipse | //svg:line | //svg:path | //svg:text | //svg:polygon | //svg:polyline | //svg:rect | //svg:use'
 
             selection_list = self.svg.xpath(selection_string)
 
