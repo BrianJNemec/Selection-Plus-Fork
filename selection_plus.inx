@@ -61,12 +61,13 @@
     <page name="path_page" gui-text="Path">
 
 <!--    <param name="combined_paths_bool" type="bool" gui-text="Combined Paths Only">false</param>-->
-
+    <hbox>
         <param name="combined_paths_combo" type="optiongroup" appearance="combo" gui-text="Combined Paths">
             <option value="ignore">Ignore</option>
             <option value="combined_only">Combined Only</option>
             <option value="uncombined_only">Uncombined Only</option>
         </param>
+    </hbox>
 
     <hbox>
 
@@ -270,6 +271,12 @@
 <!--                <param name="swatch_size_float" type="float" min="0.1" max="9999" gui-text="Swatch Size">20</param>-->
 <!--                <param name="swatch_row_length_int" type="int" min="1" max="9999" gui-text="Row Size">15</param>-->
 <!--            </hbox>-->
+        <hbox>
+            <param name="color_press_att_radio" type="optiongroup" appearance="radio" gui-text="Fill or Stroke">
+                <option value="fill">Fill</option>
+                <option value="stroke">Stroke</option>
+            </param>
+        </hbox>
 
             <separator/>
             <separator/>

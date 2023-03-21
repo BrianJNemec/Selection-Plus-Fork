@@ -8,7 +8,7 @@ import numpy as np
 
 class SpColor:
 
-    def sp_colour_main(self):
+    def sp_colour_main(self, press_att):
 
         drawable_children = self.svg.xpath('//svg:path | //svg:circle | //svg:ellipse | //svg:line | //svg:polygon | //svg:polyline | //svg:rect')
 
@@ -19,24 +19,24 @@ class SpColor:
             if element_id in element_style_dict:
                 style_entry = element_style_dict[element_id]
 
-                if 'fill' in style_entry:
+                if press_att in style_entry:
 
-                    fill = style_entry['fill']
+                    press_att_entry = style_entry[press_att]
 
                     # lets pop gradients/patterns and none fills from dict
-                    if 'url' in fill or 'none' in fill:
+                    if 'url' in press_att_entry or 'none' in press_att_entry:
                     # if 'none' in fill:
                         element_style_dict.pop(element_id)
                         inkex.errormsg('found url or hash')
                         continue
 
-                    parsed_fill = inkex.Color.parse_str(fill)[1]
+                    parsed_fill = inkex.Color.parse_str(press_att_entry)[1]
 
                     # This is a workaround, because objects
                     # Which already have rgb fills
                     # End up as quoted components
 
-                    if 'rgb' in fill:
+                    if 'rgb' in press_att_entry:
                         parsed_fill = tuple([int(x) for x in parsed_fill])
 
                     element_style_dict[element_id]['rgb_tuple'] = parsed_fill

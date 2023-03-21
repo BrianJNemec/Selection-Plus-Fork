@@ -85,8 +85,8 @@ def set_stderr(self, state):
         sys.stderr = sys.__stderr__
 
 
-set_stdout(None, 'off')
-set_stderr(None, 'off')
+# set_stdout(None, 'off')
+# set_stderr(None, 'off')
 
 # import warnings
 # warnings.filterwarnings("ignore")
@@ -191,6 +191,9 @@ class SelectionPassback(inkex.EffectExtension):
         pars.add_argument("--swatch_size_float", type=float, dest="swatch_size_float", default=5)
         pars.add_argument("--swatch_row_length_int", type=int, dest="swatch_row_length_int", default=16)
 
+        # Presentation Attribute
+        pars.add_argument("--color_press_att_radio", type=str, dest="color_press_att_radio", default='fill')
+
         # Simple Color limit
 
         pars.add_argument("--red_single_value_bool", type=inkex.Boolean, dest="red_single_value_bool", default=True)
@@ -283,7 +286,11 @@ class SelectionPassback(inkex.EffectExtension):
 
         elif self.options.selection_plus_notebook == 'color_page':
 
-            final_object_list = SpColor.sp_colour_main(self)
+            # Choose presentation attribute (fill or stroke at moment)
+
+            press_att = self.options.color_press_att_radio
+
+            final_object_list = SpColor.sp_colour_main(self, press_att)
 
         # Make an id list from the final object list.
 
