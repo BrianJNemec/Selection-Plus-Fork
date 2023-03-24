@@ -188,6 +188,15 @@
         <label appearance="header">Bounding Box Thresholds</label>
 
         <hbox>
+        <param name="bbox_type_radio" type="optiongroup" appearance="radio"
+               gui-text="Bounding Box Type">
+            <option value="geometric">Geometric</option>
+            <option value="visual">Visual</option>
+            <option value="geometric_no_text">Geometric no text (faster)</option>
+        </param>
+        </hbox>
+
+        <hbox>
             <param name="bbox_unit_choice_bool" type="bool" gui-text="">false</param>
 
         <param name="bbox_unit_choice_combo" type="optiongroup" appearance="combo"

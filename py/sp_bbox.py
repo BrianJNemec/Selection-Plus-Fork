@@ -1,4 +1,33 @@
+#!/usr/bin/env python
+# coding=utf-8
+#
+# Copyright (C) [2022] [Matt Cottam], [mpcottam@raincloud.co.uk]
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+
+##############################################################################
+# Selection Plus - a dbus based inkscape selection passback extension
+# An Inkscape 1.2.1+ extension
+##############################################################################
+
 import inkex
+
+from py.sp_util import SpUtil
+
+import sys
 
 
 conversions = {
@@ -29,20 +58,44 @@ class SpBbox:
 
     def bbox_thres(self, ilist):
 
+        # Should we also get the text bounding boxes ? (command call needed)
+
+        if self.options.bbox_type_radio == 'geometric':
+            # inkex.errormsg('query-all command call Geometric')
+            SpUtil.query_all_to_bbox(self, self.svg, current_bbox_type='geo')
+        elif self.options.bbox_type_radio == 'visual':
+            # inkex.errormsg('query-all command call Visual')
+            SpUtil.query_all_to_bbox(self, self.svg, current_bbox_type='vis')
+        elif self.options.bbox_type_radio == 'geometric_no_text':
+            for element in ilist:
+
+                for item in ilist:
+                    if item.TAG.lower() == 'text' or item.TAG.lower() == 'tspan':
+                        ilist.remove(item)
+                else:
+                    SpUtil.populate_current_bbox_from_bounding_box(self, element)
+
         # User unit choice conversion
+        # As we are now using query-all - which is pixel based have to change this
+        # if self.options.bbox_unit_choice_bool:
+        #     unit_choice = self.options.bbox_unit_choice_combo
+        #     SpBbox.cf = conversions[unit_choice] / conversions[self.svg.unit]
+        # else:
+        #     SpBbox.cf = 1
+
         if self.options.bbox_unit_choice_bool:
             unit_choice = self.options.bbox_unit_choice_combo
-            SpBbox.cf = conversions[unit_choice] / conversions[self.svg.unit]
+            SpBbox.cf = 1 / conversions[unit_choice]
         else:
-            SpBbox.cf = 1
+            SpBbox.cf = 1 / conversions[self.svg.unit]
 
-        # For the moment, lets ignore text elements
-        for item in ilist:
-            # inkex.errormsg(item.TAG)
-            if item.TAG.lower() == 'text' or item.TAG.lower() == 'tspan':
-                ilist.remove(item)
+        # Should we include text elements ?
+        # for item in ilist:
+        #     # inkex.errormsg(item.TAG)
+        #     if item.TAG.lower() == 'text' or item.TAG.lower() == 'tspan':
+        #         ilist.remove(item)
 
-        ilist_id_list = [x.get_id() for x in ilist]
+        # ilist_id_list = [x.get_id() for x in ilist]
 
         bbox_chained_thres_list = []
 
@@ -104,57 +157,53 @@ class SpBbox:
 
     def thres_bbox_width(self, element, lower_thres, upper_thres):
 
-        bbox = element.bounding_box(True)
-        width = bbox.width
+        bbox = element.current_bbox
 
-        # inkex.errormsg(f'intial width: {width}')
-
-        lower_thres *= SpBbox.cf
-        upper_thres *= SpBbox.cf
-
-        # inkex.errormsg(f'converted width: {width}')
+        width = bbox.width * SpBbox.cf
 
         return SpBbox.threshold_bool(self, width, lower_thres, upper_thres)
 
 
     def thres_bbox_height(self, element, lower_thres, upper_thres):
 
-        bbox = element.bounding_box(True)
+        bbox = element.current_bbox
 
-        height = bbox.height
+        inkex.errormsg(element.current_bbox.height)
 
-        lower_thres *= SpBbox.cf
-        upper_thres *= SpBbox.cf
+        height = bbox.height * SpBbox.cf
+
+        inkex.errormsg(f'lower thres {lower_thres}  height {height} upper thres {upper_thres}')
 
         return SpBbox.threshold_bool(self, height, lower_thres, upper_thres)
 
     def thres_bbox_diagonal(self, element, lower_thres, upper_thres):
 
         import math
-        bbox = element.bounding_box(True)
-        diagonal = round(math.sqrt((bbox.width**2) + (bbox.height**2)), 4)
+        # bbox = element.bounding_box(True)
+        bbox = element.current_bbox
+        diagonal = round(math.sqrt((bbox.width**2) + (bbox.height**2)), 4) * SpBbox.cf
 
-        lower_thres *= SpBbox.cf
-        upper_thres *= SpBbox.cf
+        inkex.errormsg(f'lower thres {lower_thres}  diagonal {diagonal} upper thres {upper_thres}')
 
         return SpBbox.threshold_bool(self, diagonal, lower_thres, upper_thres)
 
 
     def thres_bbox_area(self, element, lower_thres, upper_thres):
 
-        # For area easier to convert object into units
-        bbox = element.bounding_box(True)
-        area = (bbox.width / SpBbox.cf) * (bbox.height / SpBbox.cf)
+        # bbox = element.bounding_box(True)
+        bbox = element.current_bbox
+        area = (bbox.width * SpBbox.cf) * (bbox.height * SpBbox.cf)
 
-        # inkex.errormsg(f'conversion factor {SpBbox.cf}')
-
-        # inkex.errormsg(f'{element.get_id()} within threshold - lower: {lower_thres} upper: {upper_thres} element_value: {area}')
+        inkex.errormsg(f'{element.get_id()} within threshold - lower: {lower_thres} upper: {upper_thres} element_value: {area}')
 
         return SpBbox.threshold_bool(self, area, lower_thres, upper_thres)
 
     def thres_bbox_ratio_width_height(self, element, lower_thres, upper_thres):
 
-        bbox = element.bounding_box(True)
+        # bbox = element.bounding_box(True)
+
+        bbox = element.current_bbox
+
         width = bbox.width
         height = bbox.height
         width_height_ratio = width / height
@@ -164,7 +213,10 @@ class SpBbox:
 
     def thres_bbox_ratio_height_width(self, element, lower_thres, upper_thres):
 
-        bbox = element.bounding_box(True)
+        # bbox = element.bounding_box(True)
+
+        bbox = element.current_bbox
+
         width = bbox.width
         height = bbox.height
         height_width_ratio = height / width

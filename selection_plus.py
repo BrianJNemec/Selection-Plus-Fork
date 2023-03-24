@@ -25,13 +25,14 @@
 
 import subprocess
 
-import sys, os
+import sys, os, shutil
 
 import inkex
 
 from py.sp_bbox import SpBbox
 from py.sp_path import SpPath
 from py.sp_color import SpColor
+
 
 def get_attributes(self):
     """ Returns a string containing all object attributes
@@ -157,6 +158,7 @@ class SelectionPassback(inkex.EffectExtension):
         pars.add_argument("--xpath_user_string6", type=str, dest="xpath_user_string6", default='x')
 
         # Bounding Box Page
+        pars.add_argument("--bbox_type_radio", type=str, dest="bbox_type_radio", default='geometric')
 
         pars.add_argument("--bbox_unit_choice_bool", type=inkex.Boolean, dest="bbox_unit_choice_bool", default=False)
         pars.add_argument("--bbox_unit_choice_combo", type=str, dest="bbox_unit_choice_combo", default='px')
@@ -278,7 +280,8 @@ class SelectionPassback(inkex.EffectExtension):
         # Bounding Box Page
 
         elif self.options.selection_plus_notebook == 'bounding_box_page':
-            selection_string = '//svg:circle | //svg:ellipse | //svg:line | //svg:path | //svg:text | //svg:polygon | //svg:polyline | //svg:rect | //svg:use'
+
+            selection_string = '//svg:circle | //svg:ellipse | //svg:line | //svg:path | //svg:text | //svg:polygon | //svg:polyline | //svg:rect | //svg:use | //svg:image'
 
             selection_list = self.svg.xpath(selection_string)
 
@@ -310,6 +313,9 @@ class SelectionPassback(inkex.EffectExtension):
         # Call selection function
 
         pass_ids_to_dbus(self, id_list_string, dbus_delay, selection_mode, current_selection_id_list_string)
+
+        if hasattr(self, 'inklin_temp_folder'):
+            shutil.rmtree(self.inklin_temp_folder)
 
         sys.exit()
 

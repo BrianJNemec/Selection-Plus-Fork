@@ -1,3 +1,28 @@
+#!/usr/bin/env python
+# coding=utf-8
+#
+# Copyright (C) [2022] [Matt Cottam], [mpcottam@raincloud.co.uk]
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+
+##############################################################################
+# Selection Plus - a dbus based inkscape selection passback extension
+# An Inkscape 1.2.1+ extension
+##############################################################################
+
 import inkex
 from inkex.bezier import csparea, cspcofm, csplength
 from copy import deepcopy
@@ -246,8 +271,6 @@ class SpPath:
 
     def paths_thres_path_area(self, path_list):
 
-        inkex.errormsg('hello')
-
         path_area_list = []
 
         lower_thres = self.options.path_area_lower
@@ -255,7 +278,7 @@ class SpPath:
 
         for path_object in path_list:
             thres_bool = SpPath.thres_path_area(self, path_object, lower_thres, upper_thres)
-            inkex.errormsg(thres_bool)
+            # inkex.errormsg(thres_bool)
             if thres_bool:
                 path_area_list.append(path_object)
 
