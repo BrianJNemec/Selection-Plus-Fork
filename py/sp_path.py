@@ -72,8 +72,8 @@ class SpPath:
         current_path_list = deepcopy(path_list)
 
         if self.options.combined_paths_combo != 'ignore':
-            combined_path_list = SpPath.filter_combined_paths(self, path_list)
-            if self.options.combined_paths_combo != 'combined_only':
+            combined_path_list = SpPath.filter_combined_paths(self, current_path_list)
+            if self.options.combined_paths_combo == 'combined_only':
                 current_path_list = [x for x in current_path_list if x in combined_path_list]
             else:
                 current_path_list = [x for x in current_path_list if x not in combined_path_list]
