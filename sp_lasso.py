@@ -300,7 +300,6 @@ class DummySelf:
 import sys
 if 'standalone' in sys.argv:
 
-    write_debug_file('hello')
 
     lasso_element_id = sys.argv[-4]
 
