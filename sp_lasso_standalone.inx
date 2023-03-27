@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!--Copyright (C) [2022] [Matt Cottam], [mpcottam@raincloud.co.uk]-->
+
+<!--        This program is free software; you can redistribute it and/or modify-->
+<!--        it under the terms of the GNU General Public License as published by-->
+<!--        the Free Software Foundation; either version 2 of the License, or-->
+<!--        (at your option) any later version.-->
+
+<!--        This program is distributed in the hope that it will be useful,-->
+<!--        but WITHOUT ANY WARRANTY; without even the implied warranty of-->
+<!--        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the-->
+<!--        GNU General Public License for more details.-->
+
+<!--        You should have received a copy of the GNU General Public License-->
+<!--        along with this program; if not, write to the Free Software-->
+<!--        Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.-->
+
+
+<!--        #############################################################################-->
+<!--        #  Selection Plus - a dbus based inkscape selection passback extension   -->
+<!--        #  An Inkscape 1.2.1+ extension -->
+<!--        #############################################################################-->
+
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+    <name>Lasso Standalone (no text)</name>
+    <id>inklinea.selection_plus_lasso_standalone</id>
+
+    <param name="pixel_scale_value_int" type="int" min="25" max="9999" gui-text="Pixel Scale">300</param>
+
+    <label>Pixel Scale is the resolution used to detect objects</label>
+
+    <label>Does not support text object or clip paths at the moment</label>
+
+    <label>This extension is slow for larger documents</label>
+
+    <label>The selection can happen a couple of seconds after pressing apply</label>
+
+
+    <effect needs-live-preview="false">
+        <object-type>path</object-type>
+        <effects-menu>
+            <submenu name="Arrange"/>
+        </effects-menu>
+    </effect>
+    <script>
+        <command location="inx" interpreter="python">sp_lasso_standalone.py</command>
+    </script>
+</inkscape-extension>

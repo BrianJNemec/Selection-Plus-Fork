@@ -89,6 +89,7 @@ def set_stderr(self, state):
 set_stdout(None, 'off')
 set_stderr(None, 'off')
 
+
 # import warnings
 # warnings.filterwarnings("ignore")
 
@@ -313,9 +314,6 @@ class SelectionPassback(inkex.EffectExtension):
         # Call selection function
 
         pass_ids_to_dbus(self, id_list_string, dbus_delay, selection_mode, current_selection_id_list_string)
-
-        if hasattr(self, 'inklin_temp_folder'):
-            shutil.rmtree(self.inklin_temp_folder)
 
         sys.exit()
 
