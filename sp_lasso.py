@@ -33,6 +33,9 @@ from PIL import Image, ImageChops
 import numpy as np
 import sys, shutil
 
+# from ink_dbus import InkDbus
+
+
 import selection_plus
 #
 # selection_plus.set_stdout(None, 'off')
@@ -57,8 +60,8 @@ def set_stderr(self, state):
         sys.stderr = sys.__stderr__
 
 
-set_stdout(None, 'off')
-set_stderr(None, 'off')
+# set_stdout(None, 'off')
+# set_stderr(None, 'off')
 
 
 class SpLasso:
@@ -83,7 +86,7 @@ class SpLasso:
 
             # write_debug_file(f'width {width} height {height}')
 
-            write_debug_file(self.svg.get('viewBox'))
+            # write_debug_file(self.svg.get('viewBox'))
 
             svg_width = element.get('width')
             svg_height = element.get('height')
@@ -271,7 +274,13 @@ class SpLasso:
         # Command separated id string ( not a list )
         id_list_string = f"\'{','.join(id_list)}\'"
 
-        selection_plus.pass_ids_to_dbus(self, id_list_string, '0.5', 'clear', '')
+        # write_debug_file('next')
+
+        # selection_plus.pass_ids_to_dbus(self, id_list_string, '0.5', 'clear', '')
+
+        # InkDbus.call_dbus_selection(None, id_list, 'clear', '0.5')
+
+        return id_list
 
 
 # Needed to write debug info - as not possible to see subprocess
@@ -300,6 +309,7 @@ class DummySelf:
 import sys
 if 'standalone' in sys.argv:
 
+    # write_debug_file('standalone triggered')
 
     lasso_element_id = sys.argv[-4]
 
@@ -321,7 +331,14 @@ if 'standalone' in sys.argv:
 
     lasso_element = dummy_self.svg.getElementById(lasso_element_id)
 
-    SpLasso.return_lasso_select_list(dummy_self, lasso_element)
+    id_list = SpLasso.return_lasso_select_list(dummy_self, lasso_element)
+
+
+    # write_debug_file(f'id_list {id_list}')
+
+    from ink_dbus import InkDbus
+
+    InkDbus.call_dbus_selection(None, id_list, 'clear', 0.5)
 
     # Remove Temp Folder
     shutil.rmtree(temp_folder)

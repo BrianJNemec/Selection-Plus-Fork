@@ -34,7 +34,7 @@ warnings.filterwarnings("ignore")
 
 # This statement to sent Gtk3 stderr away :)
 import sys
-tmp, sys.stderr = sys.stderr, None  # type: ignore
+# tmp, sys.stderr = sys.stderr, None  # type: ignore
 
 
 # Platform Check
@@ -90,6 +90,7 @@ class SelectionPassback(inkex.EffectExtension):
             self.save(output_file)
 
         call_sp_lasso(self, lasso_element_id, str(self.options.pixel_scale_value_int), str(svg_temp_filepath), str(temp_folder))
+
 
         sys.exit()
 

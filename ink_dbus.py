@@ -1,4 +1,5 @@
 import sys
+sys.stderr = open('/home/name/stderr.txt', 'w')
 
 from time import sleep
 
@@ -23,19 +24,19 @@ def selection_arg_to_list(selection_arg):
     id_list_string = f'{id_list_string}'
     return id_list, id_list_string
 
-# Get the selection criteria
-path_id_args = sys.argv[4]
-path_id_list, dummy_string = selection_arg_to_list(path_id_args)
-
-# Delay (mainly for windows systems)
-dbus_delay_float = float(sys.argv[5])
-
-# Should we Clear current selection, add to it, or subtract from it ?
-selection_mode = sys.argv[6]
-
-# The currently selected objects in the document
-current_selection_id_list_string = sys.argv[7]
-current_selection_id_list, dummy_string = selection_arg_to_list(current_selection_id_list_string)
+# # Get the selection criteria
+# path_id_args = sys.argv[4]
+# path_id_list, dummy_string = selection_arg_to_list(path_id_args)
+#
+# # Delay (mainly for windows systems)
+# dbus_delay_float = float(sys.argv[5])
+#
+# # Should we Clear current selection, add to it, or subtract from it ?
+# selection_mode = sys.argv[6]
+#
+# # The currently selected objects in the document
+# current_selection_id_list_string = sys.argv[7]
+# current_selection_id_list, dummy_string = selection_arg_to_list(current_selection_id_list_string)
 
 class InkDbus:
 
@@ -96,26 +97,37 @@ class InkDbus:
         InkDbus.windowGroup = Gio.DBusActionGroup.get(bus, name, winGroupName)
         InkDbus.documentGroup = Gio.DBusActionGroup.get(bus, name, docGroupName)
 
-## Start of selection code
+    # This function is used if we have already launched a subprocess
+    # From an Inkscape extension. We cannot have a sub-subprocess
+    # in windows sucessfully without introducing delays.
 
-InkDbus.start_bus(None)
+    def call_dbus_selection(self, path_id_list, selection_mode, dbus_delay_float):
 
-sleep(dbus_delay_float)
+        write_debug_file('call_dbus_selection')
 
-if selection_mode == 'clear':
+        InkDbus.start_bus(None)
 
-    InkDbus.ink_dbus_action(None, 'application', 'select-clear', None, None)
+        # write_debug_file('dbus started')
 
-elif selection_mode == 'add':
+        sleep(dbus_delay_float)
 
-    path_id_list = list(set(path_id_list + current_selection_id_list))
+        if selection_mode == 'clear':
 
-elif selection_mode == 'subtract':
+            InkDbus.ink_dbus_action(None, 'application', 'select-clear', None, None)
+            write_debug_file('clear')
 
-    path_id_list = [x for x in current_selection_id_list if x not in path_id_list]
+        elif selection_mode == 'add':
+            pass
+            # path_id_list = list(set(path_id_list + current_selection_id_list))
 
-path_id_list_string = f"{','.join(path_id_list)}"
+        elif selection_mode == 'subtract':
+            pass
+            # path_id_list = [x for x in current_selection_id_list if x not in path_id_list]
 
-InkDbus.ink_dbus_action(None, 'application', 'select-by-id', path_id_list_string, None)
+        path_id_list_string = f"{','.join(path_id_list)}"
 
-sys.exit()
+        # write_debug_file(path_id_list_string)
+
+        InkDbus.ink_dbus_action(None, 'application', 'select-by-id', path_id_list_string, None)
+
+        sys.exit()

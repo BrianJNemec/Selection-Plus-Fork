@@ -31,7 +31,8 @@
 
     <effect>
         <object-type>path</object-type>
-        <effects-menu hidden="true">
+<!--        <effects-menu hidden="true">-->
+        <effects-menu>
             <submenu name="Arrange"/>
         </effects-menu>
     </effect>
