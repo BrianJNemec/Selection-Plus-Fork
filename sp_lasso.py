@@ -73,7 +73,6 @@ class SpLasso:
             page_height = page_bbox.height
             # We want max width of 1000 pixels
             aspect_ratio = page_width / page_height
-            SpLasso.pixel_scale_value_int = 500
             new_page_width = SpLasso.pixel_scale_value_int
             new_page_height = new_page_width / aspect_ratio
             element.set('width', f'{new_page_width}px')
