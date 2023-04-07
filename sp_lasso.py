@@ -22,6 +22,7 @@
 # Selection Plus - a dbus based inkscape selection passback extension
 # An Inkscape 1.2.1+ extension
 ##############################################################################
+import uuid
 
 import inkex
 import gi
@@ -31,37 +32,20 @@ from gi.repository import GdkPixbuf
 from PIL import Image, ImageChops
 
 import numpy as np
-import sys, shutil
-
-# from ink_dbus import InkDbus
+import sys, shutil, tempfile, os
 
 
-import selection_plus
-#
-# selection_plus.set_stdout(None, 'off')
-# selection_plus.set_stderr(None, 'off')
-# tmp, sys.stderr = sys.stderr, None  # type: ignore
+def rect_from_bbox(self, bbox, stroke_color):
+    from inkex import Rectangle
+    rect = Rectangle()
+    rect.set('x', bbox.left)
+    rect.set('y', bbox.top)
+    rect.set('width', bbox.width)
+    rect.set('height', bbox.height)
+    rect.set('stroke', stroke_color)
+    rect.set('fill', 'none')
 
-def set_stdout(self, state):
-    import sys, os
-    if state == 'off':
-        sys.stdout = open(os.devnull, 'w')
-    else:
-        sys.stdout.close()
-        sys.stdout = sys.__stdout__
-
-
-def set_stderr(self, state):
-    import sys, os
-    if state == 'off':
-        sys.stderr = open(os.devnull, 'w')
-    else:
-        sys.stderr.close()
-        sys.stderr = sys.__stderr__
-
-
-# set_stdout(None, 'off')
-# set_stderr(None, 'off')
+    self.svg.get_current_layer().append(rect)
 
 
 class SpLasso:
@@ -84,18 +68,12 @@ class SpLasso:
             view_box = ' '.join(view_box_string_list)
             element.set('viewBox', view_box)
 
-            # write_debug_file(f'width {width} height {height}')
-
-            # write_debug_file(self.svg.get('viewBox'))
-
-            svg_width = element.get('width')
-            svg_height = element.get('height')
-
             page_bbox = self.svg.get_page_bbox()
             page_width = page_bbox.width
             page_height = page_bbox.height
             # We want max width of 1000 pixels
             aspect_ratio = page_width / page_height
+            SpLasso.pixel_scale_value_int = 500
             new_page_width = SpLasso.pixel_scale_value_int
             new_page_height = new_page_width / aspect_ratio
             element.set('width', f'{new_page_width}px')
@@ -130,11 +108,15 @@ class SpLasso:
         item_list = svg.xpath('//svg:circle | //svg:ellipse | //svg:line | //svg:path | //svg:text | //svg:polygon | //svg:polyline | //svg:rect | //svg:use | //svg:image')
 
         for item in item_list:
-            item.style['display'] = 'none'
-            # inkex.errormsg(item.style)
-        element.style.pop('display')
 
-    def make_bitmap_list(self, element_list):
+            if item.getparent().TAG != 'clipPath':
+                item.style['display'] = 'none'
+
+        if 'display' in element.style.keys():
+            inkex.errormsg('found display')
+            element.style.pop('display')
+
+    def make_bitmap_list(self, element_list, lasso=False):
 
         pil_bitmap_list = []
 
@@ -148,16 +130,27 @@ class SpLasso:
             if element_copy.TAG == 'use':
                 element_copy = element_copy.unlink()
 
-            element_copy.style['stroke'] = 'green'
-            element_copy.style['fill'] = 'green'
+            inkex.errormsg(element_copy.style)
+
+            if lasso:
+                element_copy.style['stroke'] = 'none'
+                element_copy.style['fill'] = 'green'
+            else:
+                element_copy.style['stroke'] = 'green'
+                element_copy.style['fill'] = 'green'
 
             SpLasso.solo_element(svg_copy, element_copy)
 
+            inkex.errormsg(element_copy.style)
 
             pixbuf = SpLasso.element_to_pixbuf(self, svg_copy)
             im = SpLasso.pixbuf_to_pil(self, pixbuf)
 
             pil_bitmap_list.append(im)
+
+        # for image in pil_bitmap_list:
+        #     random_file_name = str(uuid.uuid4())
+        #     image.save(os.path.join(SpLasso.temp_folder, random_file_name), 'png')
 
 
         return pil_bitmap_list
@@ -172,23 +165,18 @@ class SpLasso:
 
         for element in element_list:
 
-            # inkex.errormsg('-----------------------')
-            # inkex.errormsg(element.get_id())
-            # inkex.errormsg('-----------------------')
-
             # workaround for clipath bug !
             if 'clip-path' in element.attrib.keys():
-                continue
+                element_bbox = element.bounding_box()
 
             elif element.TAG == 'use':
                 clone_dupe = element.duplicate()
                 unlinked_clone = clone_dupe.unlink()
-                element_bbox = unlinked_clone.bounding_box(True)
+                element_bbox = unlinked_clone.bounding_box()
                 unlinked_clone.delete()
-                # inkex.errormsg(element_bbox)
+
             else:
                 element_bbox = element.bounding_box(True)
-
 
             if (element_bbox.top < lasso_bbox.top):
                 continue
@@ -202,6 +190,9 @@ class SpLasso:
                 inside_list.append(element)
 
         # inkex.errormsg(inside_list)
+
+        id_list = [x.get_id() for x in inside_list]
+        inkex.errormsg(id_list)
 
         return inside_list
 
@@ -220,13 +211,14 @@ class SpLasso:
 
         inside_bbox_list = SpLasso.get_inside_bbox(self, lasso_element, element_list)
 
-        # inkex.errormsg(f'inside bbox list {inside_bbox_list}')
-
         pil_image_list = SpLasso.make_bitmap_list(self, inside_bbox_list)
 
-        lasso_pil_image = SpLasso.make_bitmap_list(self, [lasso_element])[0]
+        lasso_pil_image = SpLasso.make_bitmap_list(self, [lasso_element], True)[0]
 
         two_color_lasso_pil = SpLasso.make_two_color_pil(self, lasso_pil_image)
+
+        random_file_name = str(uuid.uuid4())
+        two_color_lasso_pil.save(os.path.join(SpLasso.temp_folder, random_file_name), 'png')
 
         im_matrix = np.array(two_color_lasso_pil)
 
@@ -238,6 +230,9 @@ class SpLasso:
         for pil_image, inside_element in zip(pil_image_list, inside_bbox_list):
 
             two_color_pil = SpLasso.make_two_color_pil(self, pil_image)
+
+            # random_file_name = str(uuid.uuid4())
+            # two_color_pil.save(os.path.join(SpLasso.temp_folder, random_file_name), 'png')
 
             image_diff = ImageChops.logical_or(two_color_lasso_pil.convert("1"), two_color_pil.convert("1"))
 
@@ -267,29 +262,10 @@ class SpLasso:
 
         lasso_list = SpLasso.make_lasso_select_list(self, lasso_element)
 
-        # inkex.errormsg(f'lasso_list {lasso_list}')
-
         id_list = [x.get_id() for x in lasso_list]
-
-        # Command separated id string ( not a list )
-        id_list_string = f"\'{','.join(id_list)}\'"
-
-        # write_debug_file('next')
-
-        # selection_plus.pass_ids_to_dbus(self, id_list_string, '0.5', 'clear', '')
-
-        # InkDbus.call_dbus_selection(None, id_list, 'clear', '0.5')
 
         return id_list
 
-
-# Needed to write debug info - as not possible to see subprocess
-# stdout / stderr in Inkscape
-
-def write_debug_file(data):
-    with open("/home/name/test.txt", mode='a', encoding='utf-8') as file:
-        file.write(str(data))
-        file.close()
 
 class SelectionPlusLasso(inkex.EffectExtension):
 
@@ -299,7 +275,7 @@ class SelectionPlusLasso(inkex.EffectExtension):
 
         SpLasso.return_lasso_select_list(self, lasso_element)
 
-        sys.exit()
+        # sys.exit()
 
 
 class DummySelf:
@@ -309,19 +285,21 @@ class DummySelf:
 import sys
 if 'standalone' in sys.argv:
 
-    # write_debug_file('standalone triggered')
+    lasso_element_id = sys.argv[2]
 
-    lasso_element_id = sys.argv[-4]
+    current_selection_id_list_string = sys.argv[3]
 
-    SpLasso.pixel_scale_value_int = int(float(sys.argv[-3]))
+    current_selection_id_list = current_selection_id_list_string.split(',')
 
-    svg_temp_filepath = sys.argv[-2]
+    SpLasso.pixel_scale_value_int = int(float(sys.argv[4]))
 
-    temp_folder = sys.argv[-1]
+    selection_mode = sys.argv[5]
 
-    # write_debug_file(f'lasso {lasso_element_id}  {SpLasso.pixel_scale_value_int}  {svg_temp_filepath}  {temp_folder}')
-    #
-    # sys.exit()
+    svg_temp_filepath = sys.argv[6]
+
+    temp_folder = sys.argv[7]
+
+    SpLasso.temp_folder = temp_folder
 
     svg_element = inkex.load_svg(svg_temp_filepath).getroot()
 
@@ -333,15 +311,13 @@ if 'standalone' in sys.argv:
 
     id_list = SpLasso.return_lasso_select_list(dummy_self, lasso_element)
 
-
-    # write_debug_file(f'id_list {id_list}')
-
     from ink_dbus import InkDbus
 
-    InkDbus.call_dbus_selection(None, id_list, 'clear', 0.5)
+    InkDbus.call_dbus_selection(None, id_list, current_selection_id_list, selection_mode, 0.5)
 
     # Remove Temp Folder
-    shutil.rmtree(temp_folder)
+    if hasattr(SpLasso, 'temp_folder'):
+        shutil.rmtree(SpLasso.temp_folder)
 
     sys.exit()
 

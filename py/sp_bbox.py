@@ -161,6 +161,8 @@ class SpBbox:
 
         width = bbox.width * SpBbox.cf
 
+        inkex.errormsg(f'lower thres {lower_thres} upper thres {upper_thres} width {width}')
+
         return SpBbox.threshold_bool(self, width, lower_thres, upper_thres)
 
 

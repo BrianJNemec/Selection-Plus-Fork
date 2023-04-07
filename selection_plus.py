@@ -102,9 +102,9 @@ def pass_ids_to_dbus(self, path_id_list_string, dbus_delay, selection_mode, curr
             py_exe = py_exe.replace('pythonw.exe', 'python.exe')
 
         DETACHED_PROCESS = 0x08000000
-        subprocess.Popen([py_exe, 'ink_dbus.py',  'application', 'None', 'None', path_id_list_string, dbus_delay, selection_mode, current_selection_id_list_string], creationflags=DETACHED_PROCESS)
+        subprocess.Popen([py_exe, 'ink_dbus.py',  'application', 'None', 'None', path_id_list_string, dbus_delay, selection_mode, current_selection_id_list_string, 'as_subprocess'], creationflags=DETACHED_PROCESS)
     else:
-        subprocess.Popen(['python3', 'ink_dbus.py', 'application', 'None', 'None', path_id_list_string, dbus_delay, selection_mode, current_selection_id_list_string],
+        subprocess.Popen(['python3', 'ink_dbus.py', 'application', 'None', 'None', path_id_list_string, dbus_delay, selection_mode, current_selection_id_list_string, 'as_subprocess'],
                          preexec_fn=os.setpgrp, stdout=open('/dev/null', 'w'),
                          stderr=open('/dev/null', 'w'), )
 

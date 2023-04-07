@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 
-<!--Copyright (C) [2022] [Matt Cottam], [mpcottam@raincloud.co.uk]-->
+<!--Copyright (C) [2023] [Matt Cottam], [mpcottam@raincloud.co.uk]-->
 
 <!--        This program is free software; you can redistribute it and/or modify-->
 <!--        it under the terms of the GNU General Public License as published by-->
@@ -19,19 +19,33 @@
 
 
 <!--        #############################################################################-->
-<!--        #  Selection Plus - a dbus based inkscape selection passback extension   -->
+<!--        #  Ink Lasso - a dbus based inkscape selection passback extension   -->
 <!--        #  An Inkscape 1.2.1+ extension -->
 <!--        #############################################################################-->
 
 <inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
-    <name>Lasso Standalone (no text)</name>
-    <id>inklinea.selection_plus_lasso_standalone</id>
+    <name>Ink Lasso</name>
+    <id>inklinea.ink_lasso</id>
 
+    <hbox>
     <param name="pixel_scale_value_int" type="int" min="25" max="9999" gui-text="Pixel Scale">300</param>
 
-    <label>Pixel Scale is the resolution used to detect objects</label>
+    <param name="selection_mode_combo" type="optiongroup" appearance="combo" gui-text="Selection Mode">
+        <option value="clear">Clear All</option>
+        <option value="add">Add</option>
+        <option value="subtract">Subtract</option>
+    </param>
 
-    <label>Does not support text object or clip paths at the moment</label>
+    <param name="text_cb" type="bool" gui-text="Include Text">false</param>
+
+    </hbox>
+
+    <label appearance="header">Lasso is the last selected element</label>
+    <label appearance="header">Shift+Left Click the chosen element to make it the last</label>
+
+    <separator/>
+
+    <label>Pixel Scale is the resolution used to detect objects</label>
 
     <label>This extension is slow for larger documents</label>
 
