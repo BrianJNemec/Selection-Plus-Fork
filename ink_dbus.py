@@ -1,17 +1,24 @@
-import sys
+import sys, os, shutil
 
 from time import sleep
 
 import gi
-import inkex
+
+import tempfile
 
 gi.require_version("Gio", "2.0")
 from gi.repository import Gio, GLib
 
 # Needed to write debug info - as not possible to see subprocess
 # stdout / stderr in Inkscape
-def write_debug_file(data):
-    with open("/home/name/test.txt", mode='a', encoding='utf-8') as file:
+
+os_tempdir = tempfile.gettempdir()
+
+def write_debug_file(data, filename):
+
+    debug_temp_filepath = os.path.join(os_tempdir, filename)
+
+    with open(debug_temp_filepath, mode='a', encoding='utf-8') as file:
         file.write(str(data))
         file.close()
 
@@ -89,11 +96,7 @@ class InkDbus:
 
     def call_dbus_selection(self, path_id_list, current_selection_id_list, selection_mode, dbus_delay_float):
 
-        write_debug_file('call_dbus_selection')
-
         InkDbus.start_bus(None)
-
-        # write_debug_file('dbus started')
 
         sleep(dbus_delay_float)
 
@@ -110,18 +113,12 @@ class InkDbus:
 
         elif selection_mode == 'subtract':
 
-            # write_debug_file(current_selection_id_list)
+
             path_id_list = [x for x in current_selection_id_list if x not in path_id_list]
-            # write_debug_file('-------------------')
-            # write_debug_file(path_id_list)
 
         path_id_list_string = f"{','.join(path_id_list)}"
 
-        # write_debug_file(path_id_list_string)
-
         InkDbus.ink_dbus_action(None, 'application', 'select-by-id', path_id_list_string, None)
-
-        # sys.exit()
 
     def standalone_dbus(self):
 
