@@ -91,6 +91,10 @@ class SelectionPassback(inkex.EffectExtension):
 
         selection_list = self.svg.selected
 
+        if len(selection_list) < 1:
+            inkex.errormsg('At least one selected object is require to lasso :)')
+            return
+
         lasso_element = selection_list[-1]
 
         lasso_element_id = lasso_element.get_id()

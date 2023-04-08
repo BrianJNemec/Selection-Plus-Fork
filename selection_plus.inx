@@ -91,9 +91,17 @@
 
     </hbox>
 
+        <vbox>
+            <spacer size="20"/>
+            <separator/>
+            <separator/>
+        </vbox>
+
         <hbox>
+
         <param name="path_thres_bool" type="bool" gui-text="">false</param>
-        <label appearance="header">Path Thresholds</label>
+
+        <label appearance="header">Filter By Path Properties Below</label>
         </hbox>
 
         <hbox>
